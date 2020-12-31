@@ -12,7 +12,7 @@ export const getRecentReleasesHourly = functions.pubsub
             functions.config().spotify.secret
         )
     
-        const snapshot = await db.collection('artists').get()
+        const snapshot = await db.collection('followed').get()
         const docs = snapshot.docs.map((doc: any) => doc.data());
             
         const res = await Promise.all(docs.map((artist: any) => getArtistsAlbums(artist.id, token)))
