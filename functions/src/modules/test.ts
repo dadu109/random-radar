@@ -10,12 +10,11 @@ export const test = functions.https.onRequest(async (request, response) => {
         functions.config().spotify.secret
     )
 
-    const snapshot = await db.collection('artists').get()
-    const docs = snapshot.docs.map((doc: any) => doc.data());
-        
-    const res = await Promise.all(docs.map((artist: any) => getArtistsAlbums(artist.id, token)))
+    const snapshot = await db.collection('followed').get()
+    const docs = snapshot.docs.map((doc: any) => doc.id);
+    const res = await Promise.all(docs.map((id: any) => getArtistsAlbums(id, token)))
 
-    res
+    const cos = res
     .flat()
     .map((album: any) => ({
         album_type:album.album_type,
@@ -40,7 +39,9 @@ export const test = functions.https.onRequest(async (request, response) => {
     .sort((a: any,b: any) => {
         return b.release_date_ms - a.release_date_ms
     })
-    .forEach(album => {
-        db.collection("albums").doc(album.id).set(album)
-    })
+
+    response.send(cos);
+    // .forEach(album => {
+    //     db.collection("albums").doc(album.id).set(album)
+    // })
 })

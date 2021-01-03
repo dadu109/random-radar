@@ -13,9 +13,9 @@ export const getRecentReleasesHourly = functions.pubsub
         )
     
         const snapshot = await db.collection('followed').get()
-        const docs = snapshot.docs.map((doc: any) => doc.data());
+        const docs = snapshot.docs.map((doc: any) => doc.id);
             
-        const res = await Promise.all(docs.map((artist: any) => getArtistsAlbums(artist.id, token)))
+        const res = await Promise.all(docs.map((id: any) => getArtistsAlbums(id, token)))
     
         await res
         .flat()
